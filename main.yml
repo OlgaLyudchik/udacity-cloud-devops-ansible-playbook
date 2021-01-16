@@ -1,5 +1,5 @@
-- name: Exercise #1
-  hosts: localhost
-
+- name: Setting up a web server in an EC2
+  hosts: all
+  user: ubuntu
   roles:
-   - print
+   - setup
