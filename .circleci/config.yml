@@ -1,0 +1,17 @@
+version: 2.1
+jobs:
+  create_infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: "Deploy AWS infrastructure"
+          command: |
+            aws cloudformation deploy \
+            --stack-name server-stack \
+            --template-file template.yml
+workflows:
+  welcome:
+    jobs:
+      - create_infrastructure
