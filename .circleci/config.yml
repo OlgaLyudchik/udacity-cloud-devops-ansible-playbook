@@ -27,9 +27,30 @@ jobs:
           name: "Configure server"
           command: |
             ansible-playbook -i inventory main.yml
+  smoke_test:
+    docker: 
+      - image: alpine:latest
+    steps: 
+      - run:
+            name: "Install curl"
+            command: |
+              apk --no-cache add curl
+      - run: 
+          name: "Verify website is responding"
+          command: |
+            URL="https://google.com"
+            if curl -s --head ${URL}
+            then
+              echo "It worked!"
+              return 0
+            else
+              echo "It failed"
+              return 1
+            fi
   
 workflows:
-  welcome:
+  playground:
     jobs:
       # - create_infrastructure
-      - configure_infrastructure
+      # - configure_infrastructure
+      - smoke_test
