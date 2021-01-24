@@ -1,4 +1,5 @@
 version: 2.1
+
 jobs:
   create_infrastructure:
     docker:
@@ -9,8 +10,15 @@ jobs:
           name: "Deploy AWS infrastructure"
           command: |
             aws cloudformation deploy \
-            --stack-name server-stack \
+            --stack-name prod-${CIRCLE_WORKFLOW_ID} \
             --template-file template.yml
+      - run: return 1
+      - run:
+          name: Destroy environment
+          command: |
+            aws cloudformation delete-stack --stack-name prod-${CIRCLE_WORKFLOW_ID}
+          when: on_fail
+
   configure_infrastructure:
     docker:
         - image: python:3.7-alpine3.11
@@ -27,6 +35,7 @@ jobs:
           name: "Configure server"
           command: |
             ansible-playbook -i inventory main.yml
+  
   smoke_test:
     docker: 
       - image: alpine:latest
@@ -51,6 +60,6 @@ jobs:
 workflows:
   playground:
     jobs:
-      # - create_infrastructure
+      - create_infrastructure
       # - configure_infrastructure
-      - smoke_test
+      # - smoke_test
