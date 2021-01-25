@@ -13,7 +13,7 @@ jobs:
             aws cloudformation deploy \
             --stack-name prod-${CIRCLE_WORKFLOW_ID} \
             --template-file template.yml
-      - run: return 1
+      # - run: return 1 # run this command if you want to test the rollback of the environment
       - run:
           name: Destroy environment
           command: |
@@ -65,3 +65,4 @@ workflows:
     jobs:
       - create_infrastructure
       # - configure_infrastructure
+      # - smoke_test
